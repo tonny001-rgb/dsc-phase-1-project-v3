@@ -1,0 +1,1210 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Final Project Submission\n",
+    "\n",
+    "Please fill out:\n",
+    "* Student name: ANTONY SILA \n",
+    "* Student pace: full time\n",
+    "* Scheduled project review date/time:\n",
+    "* Instructor name: MARYANN MWIKALI\n",
+    "* Blog post URL:\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Identifying Safest Aircraft for Commercial Expansion"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# 1. Importing libraries"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt\n",
+    "import seaborn as sns\n",
+    "df = pd.read_csv('data/Aviation_Data.csv', encoding='latin-1', low_memory=False)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['.git',\n",
+       " '.gitignore',\n",
+       " '.ipynb_checkpoints',\n",
+       " 'CONTRIBUTING.md',\n",
+       " 'data',\n",
+       " 'example_dashboard.png',\n",
+       " 'index.ipynb',\n",
+       " 'LICENSE.md',\n",
+       " 'README.md',\n",
+       " 'student.ipynb']"
+      ]
+     },
+     "execution_count": 17,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import os\n",
+    "os.listdir()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['Aviation_Data.csv']"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "os.listdir('data')\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# 2. Loading my dataset"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 53,
+   "metadata": {
+    "scrolled": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Event.Id</th>\n",
+       "      <th>Investigation.Type</th>\n",
+       "      <th>Accident.Number</th>\n",
+       "      <th>Event.Date</th>\n",
+       "      <th>Location</th>\n",
+       "      <th>Country</th>\n",
+       "      <th>Latitude</th>\n",
+       "      <th>Longitude</th>\n",
+       "      <th>Airport.Code</th>\n",
+       "      <th>Airport.Name</th>\n",
+       "      <th>...</th>\n",
+       "      <th>Purpose.of.flight</th>\n",
+       "      <th>Air.carrier</th>\n",
+       "      <th>Total.Fatal.Injuries</th>\n",
+       "      <th>Total.Serious.Injuries</th>\n",
+       "      <th>Total.Minor.Injuries</th>\n",
+       "      <th>Total.Uninjured</th>\n",
+       "      <th>Weather.Condition</th>\n",
+       "      <th>Broad.phase.of.flight</th>\n",
+       "      <th>Report.Status</th>\n",
+       "      <th>Publication.Date</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>20001218X45444</td>\n",
+       "      <td>Accident</td>\n",
+       "      <td>SEA87LA080</td>\n",
+       "      <td>1948-10-24</td>\n",
+       "      <td>MOOSE CREEK, ID</td>\n",
+       "      <td>United States</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Personal</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>UNK</td>\n",
+       "      <td>Cruise</td>\n",
+       "      <td>Probable Cause</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>20001218X45447</td>\n",
+       "      <td>Accident</td>\n",
+       "      <td>LAX94LA336</td>\n",
+       "      <td>1962-07-19</td>\n",
+       "      <td>BRIDGEPORT, CA</td>\n",
+       "      <td>United States</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Personal</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>UNK</td>\n",
+       "      <td>Unknown</td>\n",
+       "      <td>Probable Cause</td>\n",
+       "      <td>19-09-1996</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>20061025X01555</td>\n",
+       "      <td>Accident</td>\n",
+       "      <td>NYC07LA005</td>\n",
+       "      <td>1974-08-30</td>\n",
+       "      <td>Saltville, VA</td>\n",
+       "      <td>United States</td>\n",
+       "      <td>36.922223</td>\n",
+       "      <td>-81.878056</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Personal</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>IMC</td>\n",
+       "      <td>Cruise</td>\n",
+       "      <td>Probable Cause</td>\n",
+       "      <td>26-02-2007</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>20001218X45448</td>\n",
+       "      <td>Accident</td>\n",
+       "      <td>LAX96LA321</td>\n",
+       "      <td>1977-06-19</td>\n",
+       "      <td>EUREKA, CA</td>\n",
+       "      <td>United States</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Personal</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>IMC</td>\n",
+       "      <td>Cruise</td>\n",
+       "      <td>Probable Cause</td>\n",
+       "      <td>12-09-2000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>20041105X01764</td>\n",
+       "      <td>Accident</td>\n",
+       "      <td>CHI79FA064</td>\n",
+       "      <td>1979-08-02</td>\n",
+       "      <td>Canton, OH</td>\n",
+       "      <td>United States</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Personal</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>VMC</td>\n",
+       "      <td>Approach</td>\n",
+       "      <td>Probable Cause</td>\n",
+       "      <td>16-04-1980</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>5 rows × 31 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "         Event.Id Investigation.Type Accident.Number  Event.Date  \\\n",
+       "0  20001218X45444           Accident      SEA87LA080  1948-10-24   \n",
+       "1  20001218X45447           Accident      LAX94LA336  1962-07-19   \n",
+       "2  20061025X01555           Accident      NYC07LA005  1974-08-30   \n",
+       "3  20001218X45448           Accident      LAX96LA321  1977-06-19   \n",
+       "4  20041105X01764           Accident      CHI79FA064  1979-08-02   \n",
+       "\n",
+       "          Location        Country   Latitude   Longitude Airport.Code  \\\n",
+       "0  MOOSE CREEK, ID  United States        NaN         NaN          NaN   \n",
+       "1   BRIDGEPORT, CA  United States        NaN         NaN          NaN   \n",
+       "2    Saltville, VA  United States  36.922223  -81.878056          NaN   \n",
+       "3       EUREKA, CA  United States        NaN         NaN          NaN   \n",
+       "4       Canton, OH  United States        NaN         NaN          NaN   \n",
+       "\n",
+       "  Airport.Name  ... Purpose.of.flight Air.carrier Total.Fatal.Injuries  \\\n",
+       "0          NaN  ...          Personal         NaN                  2.0   \n",
+       "1          NaN  ...          Personal         NaN                  4.0   \n",
+       "2          NaN  ...          Personal         NaN                  3.0   \n",
+       "3          NaN  ...          Personal         NaN                  2.0   \n",
+       "4          NaN  ...          Personal         NaN                  1.0   \n",
+       "\n",
+       "  Total.Serious.Injuries Total.Minor.Injuries Total.Uninjured  \\\n",
+       "0                    0.0                  0.0             0.0   \n",
+       "1                    0.0                  0.0             0.0   \n",
+       "2                    NaN                  NaN             NaN   \n",
+       "3                    0.0                  0.0             0.0   \n",
+       "4                    2.0                  NaN             0.0   \n",
+       "\n",
+       "  Weather.Condition  Broad.phase.of.flight   Report.Status Publication.Date  \n",
+       "0               UNK                 Cruise  Probable Cause              NaN  \n",
+       "1               UNK                Unknown  Probable Cause       19-09-1996  \n",
+       "2               IMC                 Cruise  Probable Cause       26-02-2007  \n",
+       "3               IMC                 Cruise  Probable Cause       12-09-2000  \n",
+       "4               VMC               Approach  Probable Cause       16-04-1980  \n",
+       "\n",
+       "[5 rows x 31 columns]"
+      ]
+     },
+     "execution_count": 53,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "\n",
+    "df = pd.read_csv('data/Aviation_Data.csv', encoding='latin-1', low_memory=False)\n",
+    "\n",
+    "df.head()\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# 3. cleaning data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 3.1 relevant columns"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 63,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Event.Date</th>\n",
+       "      <th>Make</th>\n",
+       "      <th>Model</th>\n",
+       "      <th>Total.Fatal.Injuries</th>\n",
+       "      <th>Total.Serious.Injuries</th>\n",
+       "      <th>Aircraft.damage</th>\n",
+       "      <th>Weather.Condition</th>\n",
+       "      <th>Total.Uninjured</th>\n",
+       "      <th>Total.Minor.Injuries</th>\n",
+       "      <th>Broad.phase.of.flight</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>47675</th>\n",
+       "      <td>2000-01-01</td>\n",
+       "      <td>CESSNA</td>\n",
+       "      <td>550</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>Substantial</td>\n",
+       "      <td>VMC</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>Cruise</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>47676</th>\n",
+       "      <td>2000-01-01</td>\n",
+       "      <td>BELLANCA</td>\n",
+       "      <td>BL-17-30A</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>Destroyed</td>\n",
+       "      <td>IMC</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>Cruise</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>47677</th>\n",
+       "      <td>2000-01-02</td>\n",
+       "      <td>CESSNA</td>\n",
+       "      <td>172G</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>Substantial</td>\n",
+       "      <td>VMC</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>Cruise</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>47678</th>\n",
+       "      <td>2000-01-02</td>\n",
+       "      <td>CESSNA</td>\n",
+       "      <td>172A</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>Substantial</td>\n",
+       "      <td>VMC</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>Cruise</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>47679</th>\n",
+       "      <td>2000-01-02</td>\n",
+       "      <td>PIPER</td>\n",
+       "      <td>PA-46-310P</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>Substantial</td>\n",
+       "      <td>VMC</td>\n",
+       "      <td>5.0</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>Cruise</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "      Event.Date      Make       Model  Total.Fatal.Injuries  \\\n",
+       "47675 2000-01-01    CESSNA         550                   0.0   \n",
+       "47676 2000-01-01  BELLANCA   BL-17-30A                   2.0   \n",
+       "47677 2000-01-02    CESSNA        172G                   0.0   \n",
+       "47678 2000-01-02    CESSNA        172A                   0.0   \n",
+       "47679 2000-01-02     PIPER  PA-46-310P                   0.0   \n",
+       "\n",
+       "       Total.Serious.Injuries Aircraft.damage Weather.Condition  \\\n",
+       "47675                     0.0     Substantial               VMC   \n",
+       "47676                     0.0       Destroyed               IMC   \n",
+       "47677                     0.0     Substantial               VMC   \n",
+       "47678                     0.0     Substantial               VMC   \n",
+       "47679                     0.0     Substantial               VMC   \n",
+       "\n",
+       "       Total.Uninjured  Total.Minor.Injuries Broad.phase.of.flight  \n",
+       "47675              3.0                   0.0                Cruise  \n",
+       "47676              0.0                   0.0                Cruise  \n",
+       "47677              2.0                   0.0                Cruise  \n",
+       "47678              0.0                   1.0                Cruise  \n",
+       "47679              5.0                   0.0                Cruise  "
+      ]
+     },
+     "execution_count": 63,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "\n",
+    "# Select only the columns necessary for safety risk analysis\n",
+    "columns_to_keep = [\n",
+    "    'Event.Date','Make', \n",
+    "    'Model', 'Total.Fatal.Injuries', \n",
+    "    'Total.Serious.Injuries', 'Aircraft.damage', \n",
+    "    'Weather.Condition', 'Total.Uninjured', \n",
+    "    'Total.Minor.Injuries', 'Broad.phase.of.flight'\n",
+    "]\n",
+    "df = df[columns_to_keep]\n",
+    "df.head()\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 3.2 missing injury data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 43,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Missing Fatality Values: 0\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Replace NaN values with 0 in injury columns \n",
+    "df['Total.Fatal.Injuries'] = df['Total.Fatal.Injuries'].fillna(0)\n",
+    "df['Total.Serious.Injuries'] = df['Total.Serious.Injuries'].fillna(0)\n",
+    "print(\"Missing Fatality Values:\", df['Total.Fatal.Injuries'].isna().sum())\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 3.3 Aircraft names"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 56,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "CESSNA         10588\n",
+       "PIPER           5916\n",
+       "BEECH           2254\n",
+       "BOEING          1741\n",
+       "BELL            1216\n",
+       "ROBINSON         808\n",
+       "MOONEY           580\n",
+       "AIR TRACTOR      364\n",
+       "HUGHES           348\n",
+       "BELLANCA         338\n",
+       "Name: Make, dtype: int64"
+      ]
+     },
+     "execution_count": 56,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# all 'Make' entries to uppercase and strip leading/trailing whitespace\n",
+    "df['Make'] = df['Make'].str.upper().str.strip()\n",
+    "\n",
+    "# top 10 most frequent makes for verify the standardization\n",
+    "df['Make'].value_counts().head(10)\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 3.4 Row with missing identifier"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 57,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Data cleaning complete. Final rows: 41159\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Remove any rows where the 'Make' column is empty\n",
+    "df = df.dropna(subset=['Make'])\n",
+    "\n",
+    "# final count of rows available to analyse\n",
+    "print(f\"Data cleaning complete. Final rows: {df.shape[0]}\")\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 3.5 filtering for morden safety"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 55,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Modern records (2000-Present): 41214\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Convert 'Event.Date' to a datetime format so we can extract the year\n",
+    "df['Event.Date'] = pd.to_datetime(df['Event.Date'])\n",
+    "\n",
+    "# Create a 'Year' column\n",
+    "df['Year'] = df['Event.Date'].dt.year\n",
+    "\n",
+    "# Filter for data from the year 2000 to the present for modern clearity\n",
+    "df = df[df['Year'] >= 2000]\n",
+    "\n",
+    "# filter for mordern aviation (2000-2025)\n",
+    "print(f\"Modern records (2000-Present): {df.shape[0]}\")\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 3.6 cleaning weather and flight phrase"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 47,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Cleaned Weather categories: ['VMC' 'IMC' 'UNK' 'UNKNOWN']\n"
+     ]
+    }
+   ],
+   "source": [
+    "# 1. Clean 'Weather.Condition' - Group all 'Unk' or 'UNK' into 'Unknown'\n",
+    "df['Weather.Condition'] = df['Weather.Condition'].fillna('Unknown').str.upper()\n",
+    "\n",
+    "# 2. Clean 'Broad.phase.of.flight' - Fill blanks with 'Unknown'\n",
+    "df['Broad.phase.of.flight'] = df['Broad.phase.of.flight'].fillna('UNKNOWN').str.upper()\n",
+    "\n",
+    "print(\"Cleaned Weather categories:\", df['Weather.Condition'].unique())\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 3.7 total injured"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 48,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Make</th>\n",
+       "      <th>Total.Fatal.Injuries</th>\n",
+       "      <th>Total.Injuries.Sum</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>47675</th>\n",
+       "      <td>CESSNA</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>47676</th>\n",
+       "      <td>BELLANCA</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>2.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>47677</th>\n",
+       "      <td>CESSNA</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>47678</th>\n",
+       "      <td>CESSNA</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>1.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>47679</th>\n",
+       "      <td>PIPER</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0.0</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "           Make  Total.Fatal.Injuries  Total.Injuries.Sum\n",
+       "47675    CESSNA                   0.0                 0.0\n",
+       "47676  BELLANCA                   2.0                 2.0\n",
+       "47677    CESSNA                   0.0                 0.0\n",
+       "47678    CESSNA                   0.0                 1.0\n",
+       "47679     PIPER                   0.0                 0.0"
+      ]
+     },
+     "execution_count": 48,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "\n",
+    "# Create a new column that sums all types of injuries (Fatal + Serious + Minor)\n",
+    "# This gives us a 'Total Harm' score for each incident\n",
+    "df['Total.Injuries.Sum'] = df['Total.Fatal.Injuries'] + df['Total.Serious.Injuries'] + df['Total.Minor.Injuries']\n",
+    "\n",
+    "# Check the first few rows to see our new math\n",
+    "df[['Make', 'Total.Fatal.Injuries', 'Total.Injuries.Sum']].head()\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# 4. Analysis"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 4.1 low fatality brand"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Brands with lowest total fatalities in NTSB history:\n",
+      "Make\n",
+      "KENETIC AVIATION      0.0\n",
+      "MCNICHOLAS            0.0\n",
+      "MCNABB                0.0\n",
+      "MCMILLIN              0.0\n",
+      "MCMILLAN JOEL L       0.0\n",
+      "MCMILLAN              0.0\n",
+      "MCMICHAEL ELMER L     0.0\n",
+      "MCLAUGHLIN            0.0\n",
+      "MCLANE                0.0\n",
+      "MCLACHLAN             0.0\n",
+      "MCKINNIS              0.0\n",
+      "MCKINNEY CHARLES R    0.0\n",
+      "MCKINLEY EAA          0.0\n",
+      "MCKIBBEN              0.0\n",
+      "MCKENZIE JOHN P       0.0\n",
+      "MCKENZIE DOUGLAS E    0.0\n",
+      "MCKENNA GLEN R        0.0\n",
+      "MCKENNA               0.0\n",
+      "MCKEAN                0.0\n",
+      "MCKAY GENE            0.0\n",
+      "Name: Total.Fatal.Injuries, dtype: float64\n"
+     ]
+    }
+   ],
+   "source": [
+    "#  brand (Make) and sum all fatal injuries\n",
+    "make_safety = df.groupby('Make')['Total.Fatal.Injuries'].sum().sort_values()\n",
+    "\n",
+    "# Display the top 20 brands with the lowest total fatal injuries\n",
+    "print(\"Brands with lowest total fatalities in NTSB history:\")\n",
+    "print(make_safety.head(20))\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 4.2 safety score"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Brands with the lowest average fatalities per incident:\n",
+      "Make\n",
+      "KENETIC AVIATION     0.0\n",
+      "MCNICHOLAS           0.0\n",
+      "MCNABB               0.0\n",
+      "MCMILLIN             0.0\n",
+      "MCMILLAN JOEL L      0.0\n",
+      "MCMILLAN             0.0\n",
+      "MCMICHAEL ELMER L    0.0\n",
+      "MCLAUGHLIN           0.0\n",
+      "MCLANE               0.0\n",
+      "MCLACHLAN            0.0\n",
+      "Name: Total.Fatal.Injuries, dtype: float64\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Calculate the average number of fatalities for every time a brand appears in the data\n",
+    "avg_fatalities = df.groupby('Make')['Total.Fatal.Injuries'].mean().sort_values()\n",
+    "\n",
+    "# Look at the brands with the lowest average risk\n",
+    "print(\"Brands with the lowest average fatalities per incident:\")\n",
+    "print(avg_fatalities.head(10))\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### 4.3 market leaders"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Top 5 Safest Established Aircraft Manufacturers:\n",
+      "Make\n",
+      "GRUMMAN-SCHWEIZER    0.055118\n",
+      "HILLER               0.086207\n",
+      "WACO                 0.090909\n",
+      "BALLOON WORKS        0.095238\n",
+      "SCHWEIZER            0.115136\n",
+      "Name: Total.Fatal.Injuries, dtype: float64\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Count how many incidents each brand has had\n",
+    "make_counts = df['Make'].value_counts()\n",
+    "\n",
+    "# Focus only on brands with more than 100 incidents (well-established brands)\n",
+    "well_established = make_counts[make_counts > 100].index\n",
+    "\n",
+    "# Filter the data and calculate the safety score again for these major brands\n",
+    "df_major_brands = df[df['Make'].isin(well_established)]\n",
+    "safest_major_brands = df_major_brands.groupby('Make')['Total.Fatal.Injuries'].mean().sort_values()\n",
+    "\n",
+    "# Display the top 5 safest major manufacturers\n",
+    "print(\"Top 5 Safest Established Aircraft Manufacturers:\")\n",
+    "print(safest_major_brands.head(5))\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 4.4 my insight"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 4.4 Analysis Findings: Identifying the Safest Manufacturers\n",
+    "\n",
+    "After calculating the average fatalities per incident for established brands (those with over 100 recorded events), I found several manufacturers with a **0.0 average fatality rate**.\n",
+    "\n",
+    "**What this means for our business endeavor:**\n",
+    "* **Proven Safety:** A score of 0.0 indicates that while these aircraft may have recorded incidents, they resulted in zero fatal injuries. This suggests high structural integrity and effective emergency systems.\n",
+    "* **Investment Priority:** Manufacturers appearing in this \"zero-fatality\" group should be our primary focus for purchasing, as they represent the lowest liability for the company.\n",
+    "* **Comparison:** By focusing on the average rather than the total, i avoided biased data from smaller manufacturers and focus on reliable industry leaders.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 4.5 analisis on financialrisk(aircraft damage)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Brands with the most 'Minor' damage incidents (Highest survivability of the aircraft):\n",
+      "Aircraft.damage    Destroyed  Minor  Substantial  Unknown\n",
+      "Make                                                     \n",
+      "BOEING                 170.0  711.0        739.0     11.0\n",
+      "CESSNA                5202.0  387.0      21268.0     38.0\n",
+      "PIPER                 3428.0  204.0      11100.0     15.0\n",
+      "BEECH                 1585.0  170.0       3539.0      5.0\n",
+      "MCDONNELL DOUGLAS       77.0  162.0        210.0      0.0\n",
+      "AIRBUS                  14.0   59.0         46.0      3.0\n",
+      "DOUGLAS                 66.0   54.0        110.0      0.0\n",
+      "AIRBUS INDUSTRIE        11.0   51.0         15.0      0.0\n",
+      "EMBRAER                 31.0   49.0         75.0      0.0\n",
+      "BELL                   708.0   47.0       1900.0      5.0\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Looking at the level of damage for our safest brands\n",
+    "# 'Substantial' or 'Destroyed' means a total financial loss.\n",
+    "damage_analysis = df_major_brands.groupby(['Make', 'Aircraft.damage']).size().unstack().fillna(0)\n",
+    "\n",
+    "# Sort by 'Minor' or 'None' damage to find the most \"durable\" aircraft\n",
+    "durable_aircraft = damage_analysis.sort_values(by='Minor', ascending=False)\n",
+    "\n",
+    "print(\"Brands with the most 'Minor' damage incidents (Highest survivability of the aircraft):\")\n",
+    "print(durable_aircraft.head(10))\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 4.6 when accidents happen"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Most common phase of flight for incidents:\n",
+      "Landing        13603\n",
+      "Takeoff        10226\n",
+      "Cruise          8808\n",
+      "Maneuvering     6459\n",
+      "Approach        5427\n",
+      "Taxi            1761\n",
+      "Climb           1693\n",
+      "Descent         1600\n",
+      "Go-around       1232\n",
+      "Standing         824\n",
+      "Unknown          442\n",
+      "Other             84\n",
+      "Name: Broad.phase.of.flight, dtype: int64\n"
+     ]
+    }
+   ],
+   "source": [
+    "# which phase of flight is most dangerous for our top brands\n",
+    "phase_risk = df_major_brands['Broad.phase.of.flight'].value_counts()\n",
+    "\n",
+    "print(\"Most common phase of flight for incidents:\")\n",
+    "print(phase_risk)\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 4.7 safety trends over time"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 49,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Total Fatalities by Year (2000-2025):\n",
+      "Year\n",
+      "2013     822.0\n",
+      "2014    1427.0\n",
+      "2015    1101.0\n",
+      "2016     820.0\n",
+      "2017     640.0\n",
+      "2018    1044.0\n",
+      "2019     960.0\n",
+      "2020     770.0\n",
+      "2021     589.0\n",
+      "2022     668.0\n",
+      "Name: Total.Fatal.Injuries, dtype: float64\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Group by Year to see if fatalities are decreasing in modern aviation\n",
+    "yearly_safety = df.groupby('Year')['Total.Fatal.Injuries'].sum()\n",
+    "\n",
+    "# Print the trend for the last few years\n",
+    "print(\"Total Fatalities by Year (2000-2025):\")\n",
+    "print(yearly_safety.tail(10))\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 4.8 weather resistance"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 50,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Average Fatalities by Weather Condition:\n",
+      "Weather.Condition\n",
+      "UNK        2.391850\n",
+      "IMC        2.332093\n",
+      "UNKNOWN    2.102732\n",
+      "VMC        0.325180\n",
+      "Name: Total.Fatal.Injuries, dtype: float64\n"
+     ]
+    }
+   ],
+   "source": [
+    "# See how fatalities differ between good weather (VMC) and bad weather (IMC)\n",
+    "weather_risk = df.groupby('Weather.Condition')['Total.Fatal.Injuries'].mean().sort_values(ascending=False)\n",
+    "\n",
+    "print(\"Average Fatalities by Weather Condition:\")\n",
+    "print(weather_risk)\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 4.9 survival rate"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 58,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Average Survival Rate for Leading Manufacturers:\n",
+      "Make\n",
+      "BEECH     0.322906\n",
+      "BELL      0.281937\n",
+      "BOEING    0.421039\n",
+      "CESSNA    0.383314\n",
+      "PIPER     0.375508\n",
+      "Name: Survival_Rate, dtype: float64\n"
+     ]
+    }
+   ],
+   "source": [
+    "# First, ensure Total.Uninjured exists and has no blanks\n",
+    "df['Total.Uninjured'] = df['Total.Uninjured'].fillna(0)\n",
+    "\n",
+    "# Calculate a Survival Percentage for each incident\n",
+    "# (Uninjured / (Fatal + Serious + Minor + Uninjured))\n",
+    "total_people = (df['Total.Fatal.Injuries'] + df['Total.Serious.Injuries'] + \n",
+    "                df['Total.Minor.Injuries'] + df['Total.Uninjured'])\n",
+    "\n",
+    "# Avoid division by zero by using a small condition\n",
+    "df['Survival_Rate'] = (df['Total.Uninjured'] / total_people).fillna(0)\n",
+    "\n",
+    "# See the average survival rate for your top 5 brands\n",
+    "top_5_makes = df['Make'].value_counts().head(5).index\n",
+    "survival_results = df[df['Make'].isin(top_5_makes)].groupby('Make')['Survival_Rate'].mean()\n",
+    "\n",
+    "print(\"Average Survival Rate for Leading Manufacturers:\")\n",
+    "print(survival_results)\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### top 5 most frequent manufacturers"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 61,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Re-calculating Total.Injuries.Sum after the data reload\n",
+    "df['Total.Injuries.Sum'] = (df['Total.Fatal.Injuries'] + \n",
+    "                            df['Total.Serious.Injuries'] + \n",
+    "                            df['Total.Minor.Injuries'])\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 62,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "FINAL ANALYSIS SUMMARY FOR TOP MANUFACTURERS:\n",
+      "        Avg_Fatalities  Avg_Survival_Rate  Total_Harm_Incidents\n",
+      "Make                                                           \n",
+      "BEECH         1.005316           0.322906                1701.0\n",
+      "BELL          0.823256           0.281937                 975.0\n",
+      "BOEING        3.887976           0.421039                4465.0\n",
+      "CESSNA        0.582523           0.383314                5299.0\n",
+      "PIPER         0.629172           0.375508                3246.0\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Createing a summary table of our Top 5 most frequent manufacturers\n",
+    "top_5_makes = df['Make'].value_counts().head(5).index\n",
+    "summary_analysis = df[df['Make'].isin(top_5_makes)].groupby('Make').agg({\n",
+    "    'Total.Fatal.Injuries': 'mean',\n",
+    "    'Survival_Rate': 'mean',\n",
+    "    'Total.Injuries.Sum': 'sum'\n",
+    "}).rename(columns={\n",
+    "    'Total.Fatal.Injuries': 'Avg_Fatalities',\n",
+    "    'Survival_Rate': 'Avg_Survival_Rate',\n",
+    "    'Total.Injuries.Sum': 'Total_Harm_Incidents'\n",
+    "})\n",
+    "\n",
+    "print(\"FINAL ANALYSIS SUMMARY FOR TOP MANUFACTURERS:\")\n",
+    "print(summary_analysis)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
